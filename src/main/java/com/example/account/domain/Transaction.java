@@ -1,52 +1,45 @@
 package com.example.account.domain;
 
-import com.example.account.exception.AccountException;
 import com.example.account.type.AccountStatus;
-import com.example.account.type.ErrorCode;
+import com.example.account.type.TransactionResultType;
+import com.example.account.type.TransactionType;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity
 @EntityListeners(AuditingEntityListener.class)
-public class Account {
+public class Transaction {
     @Id
     @GeneratedValue
     private Long id;
 
-    @ManyToOne
-    private AccountUser accountUser;
-
-    private String accountNumber;
+    @Enumerated(EnumType.STRING)
+    private TransactionType transactionType;
 
     @Enumerated(EnumType.STRING)
-    private AccountStatus accountStatus;
+    private TransactionResultType transactionResultType;
 
-    private Long balance;
+    @ManyToOne
+    private Account account;
+    private Long amount;
+    private Long balanceSnapshot;
 
-    private LocalDateTime regiteredAt;
-    private LocalDateTime unRegisteredAt;
+    private String transactionId;
+    private LocalDateTime transactedAt;
 
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime updateAt;
-
-    public void useBalance(long amount){
-        if(amount>balance){
-            throw new AccountException(ErrorCode.AMOUNT_EXCEED_BALANCE);
-        }
-        balance-=amount;
-    }
 
 }
