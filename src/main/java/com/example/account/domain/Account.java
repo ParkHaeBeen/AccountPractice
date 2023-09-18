@@ -49,4 +49,10 @@ public class Account {
         balance-=amount;
     }
 
+    public void cancelBalance(long amount){
+        if(amount<0){
+            throw new AccountException(ErrorCode.INVALID_REQUEST);
+        }
+        balance+=amount;
+    }
 }
