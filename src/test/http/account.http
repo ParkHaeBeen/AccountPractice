@@ -9,7 +9,7 @@ Content-Type: application/json
 
 {
   "userId": 1,
-  "intialBalance":20000
+  "intialBalance":10000
 }
 
 ###

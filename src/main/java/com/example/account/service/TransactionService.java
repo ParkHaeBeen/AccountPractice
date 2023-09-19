@@ -91,7 +91,7 @@ public class TransactionService {
                         .build()
         );
     }
-
+    @Transactional
     public TransactionDto cancelBalance(String transactionId, String accountNumber, Long amount) {
 
         Transaction transaction = transactionRepository.findByTransactionId(transactionId)
@@ -130,5 +130,13 @@ public class TransactionService {
                 .orElseThrow(()-> new AccountException(ErrorCode.NOT_ACCOUNT_EXIST));
 
         saveandGetTransaction(CANCEL,F, account, amount);
+    }
+
+    @Transactional
+    public TransactionDto queryTransaction(String transactionId) {
+        Transaction transaction = transactionRepository.findByTransactionId(transactionId)
+                .orElseThrow(() -> new AccountException(ErrorCode.TRANSACTION_NOT_FOUND));
+
+        return TransactionDto.fromEntity(transaction);
     }
 }

@@ -17,7 +17,9 @@ public enum ErrorCode {
     TRANSACTION_ACCOUNT_UN_MATCH("해당 거래의 사용자와 요청자가 다릅니다"),
     CANCEL_MUST_FULLY("부분 취소는 허용되지 않습니다"),
     TOO_OLD_FOR_CANCEL("1년이상 지난 거래는 취소되지 않습니다"),
-    INVALID_REQUEST("불가능한 요청입니다");
+    INVALID_REQUEST("불가능한 요청입니다"),
+    INTERNAL_SERVER_ERROR("내부 에러 발생"),
+    ACCOUNT_TRANSACTION_LOCK("해당계좌는 사용중입니다");
 
     private final String description;
 

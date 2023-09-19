@@ -1,15 +1,16 @@
 package com.example.account.controller;
 
+import com.example.account.aop.AccountLock;
 import com.example.account.dto.CancelBalance;
+import com.example.account.dto.QueryTransactionResponse;
 import com.example.account.dto.TransactionDto;
 import com.example.account.dto.UseBalance;
 import com.example.account.exception.AccountException;
 import com.example.account.service.TransactionService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -27,13 +28,15 @@ public class TransactionController {
 
     private final TransactionService transactionService;
     @PostMapping("/transaction/use")
-    public UseBalance.Response useBalance(@Valid @RequestBody UseBalance.Request request){
+    @AccountLock
+    public UseBalance.Response useBalance(@Valid @RequestBody UseBalance.Request request) throws InterruptedException {
 
         TransactionDto transactionDto = transactionService.useBalance(request.getUserId(), request.getAccountNumber()
                 , request.getAmount());
 
         //exception발생시 어떻게 결과를 저장할 것인가?
         try {
+            Thread.sleep(3000L);
             return UseBalance.Response.from(transactionDto);
         }catch (AccountException e){
             log.error("Failed to use balance");
@@ -48,6 +51,7 @@ public class TransactionController {
     }
 
     @PostMapping("/transaction/cancel")
+    @AccountLock
     public CancelBalance.Response cancelBalance(@Valid @RequestBody CancelBalance.Request request){
 
 
@@ -66,6 +70,13 @@ public class TransactionController {
 
             throw e;
         }
+    }
+
+    @GetMapping("/transaction/{transactionId}")
+    public QueryTransactionResponse queryTransaction(@PathVariable String transactionId){
+        TransactionDto transactionDto = transactionService.queryTransaction(transactionId);
+
+        return QueryTransactionResponse.from(transactionDto);
     }
 
 }
